@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import './../customer/css/RegisterPage.css'; // Your styling
+import './../customer/css/RegisterPage.css';
 import { useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
   const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     fullName: '',
     accountNumber: '',
@@ -11,11 +12,13 @@ function RegisterPage() {
     idNumber: '',
   });
 
+  const [errors, setErrors] = useState({}); // ✅ you need this!
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: null })); // clear the error when user types
   };
-  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,20 +28,33 @@ function RegisterPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
+  
+      // Log raw response text to inspect it
+      const responseText = await response.text();
+  
       if (response.ok) {
-        alert('Registration successful! Please login.');
         navigate('/login');
       } else {
-        const error = await response.json();
-        alert(error.message || 'Registration failed');
+        try {
+          // Try parsing as JSON if the response is JSON
+          const responseBody = JSON.parse(responseText);
+          if (responseBody.errors) {
+            setErrors(responseBody.errors); // ✅ set errors if validation fails
+          } else {
+            alert(responseBody.message || 'Registration failed');
+          }
+        } catch (jsonParseError) {
+          // Handle case where the response is not valid JSON
+          alert('Registration failed: ' + responseText);
+        }
       }
     } catch (err) {
-      console.error('Registration Error:', err);
+      console.error('Error occurred:', err);
       alert('Something went wrong.');
     }
   };
-
+  
+  
   return (
     <div className="register-container">
       <h2>Customer Registration</h2>
@@ -50,9 +66,11 @@ function RegisterPage() {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
-            required
+            
           />
+          {errors.FullName && <div className="error-message">{errors.FullName[0]}</div>}
         </div>
+
         <div className="form-group">
           <label>Account Number</label>
           <input
@@ -60,9 +78,11 @@ function RegisterPage() {
             name="accountNumber"
             value={formData.accountNumber}
             onChange={handleChange}
-            required
+            
           />
+          {errors.AccountNumber && <div className="error-message">{errors.AccountNumber[0]}</div>}
         </div>
+
         <div className="form-group">
           <label>ID Number</label>
           <input
@@ -70,9 +90,11 @@ function RegisterPage() {
             name="idNumber"
             value={formData.idNumber}
             onChange={handleChange}
-            required
+            
           />
+          {errors.IdNumber && <div className="error-message">{errors.IdNumber[0]}</div>}
         </div>
+
         <div className="form-group">
           <label>Password</label>
           <input
@@ -80,10 +102,11 @@ function RegisterPage() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            required
+            
           />
-
+          {errors.Password && <div className="error-message">{errors.Password[0]}</div>}
         </div>
+
         <button type="submit" className="register-btn">Register</button>
       </form>
     </div>

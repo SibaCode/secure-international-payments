@@ -92,6 +92,8 @@ function DashboardPage() {
         {error && <Notification message={error} type="error" />}
 
         <h3>Transaction History</h3>
+        <button onClick={toggleModal}>Add New Transaction</button>
+
         <table>
           <thead>
             <tr>

@@ -69,7 +69,7 @@ function LoginPage() {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
-            required
+            
           />
         </div>
         <div className="form-group">
@@ -79,7 +79,7 @@ function LoginPage() {
             name="accountNumber"
             value={formData.accountNumber}
             onChange={handleChange}
-            required
+            
           />
         </div>
         <div className="form-group">
@@ -89,7 +89,7 @@ function LoginPage() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            required
+            
           />
                     {errors.password && <div className="error-message">{errors.password}</div>}
 
