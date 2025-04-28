@@ -1,6 +1,6 @@
 // Notification.js
 import React from 'react';
-import './Notification.css'; // Custom styles for the notification
+import './Notification.css'; 
 
 function Notification({ message, type }) {
   return (

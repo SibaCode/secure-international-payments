@@ -5,7 +5,11 @@
     padding: 20px;
     font-family: 'Poppins', sans-serif;
   }
-  
+  .error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+  }
   h2, h3 {
     text-align: center;
     color: #333;

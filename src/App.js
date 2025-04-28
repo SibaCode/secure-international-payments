@@ -3,9 +3,10 @@ import { Routes, Route, useNavigate , Navigate} from 'react-router-dom';
 import DashboardPage from './components/customer/DashboardPage';
 import RegisterPage from './components/customer/RegisterPage';
 import LoginPage from './components/customer/LoginPage';
-import EmployeeLoginPage from './components/employee/EmployeeLoginPage'; // Import employee login page
-import EmployeeDashboardPage from './components/employee/EmployeeDashboardPage'; // Import employee login page
-import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+import EmployeeLoginPage from './components/employee/EmployeeLoginPage';
+import EmployeeDashboardPage from './components/employee/EmployeeDashboardPage'; 
+import ProtectedRoute from './components/ProtectedRoute'; 
+import { AuthProvider } from  './AuthContext.js';
 
 function App() {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ function App() {
   });
   const [error, setError] = useState('');
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -24,7 +24,6 @@ function App() {
     });
   };
 
-  // Handle login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -34,13 +33,13 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData), // Ensure formData includes accountNumber
+        body: JSON.stringify(formData), 
       });
   
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token); // Store the token in localStorage
-        navigate('/dashboard'); // Redirect to the dashboard
+        localStorage.setItem('token', data.token);
+        navigate('/dashboard'); 
       } else {
         const error = await response.json();
         setError(error.message || 'Login failed');
@@ -54,6 +53,7 @@ function App() {
 
   return (
     <div className="App">
+      <AuthProvider>
       <Routes>
         {/* Login Route */}
         <Route path="/" element={<Navigate to="/login" />} />
@@ -81,6 +81,8 @@ function App() {
           } 
         />
       </Routes>
+      </AuthProvider>
+
     </div>
   );
 }

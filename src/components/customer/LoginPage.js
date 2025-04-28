@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './../customer/css/LoginPage.css'; // Styling file
+import { useAuth } from '../../../src/AuthContext';
+import './../customer/css/LoginPage.css'; // Your styling
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [formData, setFormData] = useState({
-    username: '',
+    fullName: '',
     accountNumber: '',
     password: '',
   });
@@ -14,40 +16,58 @@ function LoginPage() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/customers/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+  e.preventDefault();
+  try {
+    const response = await fetch('https://localhost:7150/api/Customers/Login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: formData.fullName,
+        accountNumber: formData.accountNumber,
+        password: formData.password,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Login success:', data);
+
+      localStorage.setItem('token', data.token);
+      setUser({
+        fullName: data.customer.fullName,
+        accountNumber: data.customer.accountNumber,
+        id: data.customer.id,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        navigate('/dashboard');
+      navigate('/dashboard');
+    } else {
+      const errorData = await response.json();
+      if (errorData.errors) {
+        alert(errorData.errors); // Set error state
       } else {
-        const error = await response.json();
-        alert(error.message || 'Login failed');
+        alert(errorData.message || 'Login failed');
       }
-    } catch (err) {
-      console.error('Login Error:', err);
-      alert('Something went wrong. Please try again.');
     }
-  };
+  } catch (err) {
+    console.error('Login Error:', err);
+    alert('Something went wrong. Please try again.');
+  }
+};
+
 
   return (
     <div className="login-container">
       <h2>Customer Login</h2>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
-          <label>Username</label>
+          <label>Full Name</label>
           <input
             type="text"
-            name="username"
-            value={formData.username}
+            name="fullName"
+            value={formData.fullName}
             onChange={handleChange}
             required
           />
@@ -71,6 +91,8 @@ function LoginPage() {
             onChange={handleChange}
             required
           />
+                    {errors.password && <div className="error-message">{errors.password}</div>}
+
         </div>
         <button type="submit" className="login-btn">Login</button>
       </form>

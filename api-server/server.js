@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = 5000;
-const SECRET = 'secretkey'; // TODO: Move to .env for production
+const SECRET = 'secretkey'; 
 
 app.use(cors());
 app.use(express.json());
@@ -16,7 +16,7 @@ const customers = [
     id: 1,
     username: 'customer1',
     accountNumber: '1234567890',
-    password: '$2b$10$uqXGIr21kEpqdPkqHlf0GuFpAUqHiv8Q26fzyTlEKNx3MtZVFxRj2', // 'password123'
+    password: '$2b$10$1', // 'password123'
   }
 ];
 
@@ -33,7 +33,7 @@ app.post('/api/customers/login', async (req, res) => {
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+    return res.status(401).json({ message: 'Invalid credentials22' });
   }
 
   const token = jwt.sign({ id: user.id, username: user.username }, SECRET, {
@@ -43,7 +43,6 @@ app.post('/api/customers/login', async (req, res) => {
   res.json({ token });
 });
 
-// Submit a new transaction (dummy logic for now)
 app.post('/api/customers/transactions', (req, res) => {
   const { amount, currency, provider, accountInfo, swiftCode } = req.body;
 
@@ -55,10 +54,8 @@ app.post('/api/customers/transactions', (req, res) => {
   console.log('Received transaction:', req.body);
   res.status(201).json({ message: 'Transaction submitted successfully' });
 });
-// Verification route for employee to verify transactions
 app.post('/api/employee/verify/:transactionId', (req, res) => {
   const { transactionId } = req.params;
-  // Find the transaction and update its status to 'verified'
   const transaction = transactions.find(tx => tx.id === parseInt(transactionId));
   
   if (!transaction) {
@@ -69,10 +66,8 @@ app.post('/api/employee/verify/:transactionId', (req, res) => {
   res.json({ message: 'Transaction verified' });
 });
 
-// Flagging route for employee to flag transactions as suspicious
 app.post('/api/employee/flag/:transactionId', (req, res) => {
   const { transactionId } = req.params;
-  // Find the transaction and update its status to 'flagged'
   const transaction = transactions.find(tx => tx.id === parseInt(transactionId));
   
   if (!transaction) {
@@ -83,7 +78,6 @@ app.post('/api/employee/flag/:transactionId', (req, res) => {
   res.json({ message: 'Transaction flagged as suspicious' });
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`API server running on http://localhost:${PORT}`);
 });

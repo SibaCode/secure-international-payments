@@ -1,19 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { mockTransactions } from './../../mockData'; // Import mock data
 import './../employee/css/EmployeeDashboardPage.css'; // Add custom styles
 import Notification from './../../Notification'; // Import the Notification component
 import Navbar from '../../components/Navbar';
 
 function EmployeeDashboardPage() {
-  const [transactions, setTransactions] = useState(mockTransactions); // Use mock data initially
+  const [transactions, setTransactions] = useState([]); // Store transactions from API
   const [selectedTransaction, setSelectedTransaction] = useState(null); // Store selected transaction for modal
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false); // Track if the modal is open
+  const [status, setStatus] = useState(''); // Track the selected status in the dropdown
 
-  // Open the modal to verify or flag a transaction
+  // Fetch transactions from API
+  const fetchTransactions = async () => {
+    try {
+      const response = await fetch('https://localhost:7150/api/Employee/transactions');
+      if (!response.ok) {
+        throw new Error('Failed to load transactions');
+      }
+      const data = await response.json();
+      setTransactions(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []); // Fetch transactions when the component mounts
+
+  // Open the modal to verify or decline a transaction
   const openModal = (transaction) => {
     setSelectedTransaction(transaction);
+    setStatus(transaction.status); // Set current status as default in the dropdown
     setIsModalOpen(true);
   };
 
@@ -23,26 +42,61 @@ function EmployeeDashboardPage() {
     setSelectedTransaction(null);
   };
 
-  // Handle verify action
-  const handleVerify = (transactionId) => {
-    setTransactions(prevTransactions =>
-      prevTransactions.map(tx =>
-        tx.id === transactionId ? { ...tx, status: 'verified' } : tx
-      )
-    );
-    setSuccess('Transaction verified successfully');
-    closeModal(); // Close modal after action
+  // Handle the Save action based on dropdown selection (Verify or Decline)
+  const handleSave = async () => {
+    if (status === 'Verified') {
+      await handleVerify(selectedTransaction.id);
+    } else if (status === 'Declined') {
+      await handleDecline(selectedTransaction.id);
+    }
   };
 
-  // Handle flag action
-  const handleFlag = (transactionId) => {
-    setTransactions(prevTransactions =>
-      prevTransactions.map(tx =>
-        tx.id === transactionId ? { ...tx, status: 'flagged' } : tx
-      )
-    );
-    setSuccess('Transaction flagged as suspicious');
-    closeModal(); // Close modal after action
+  // Handle verify action (API call to verify the transaction)
+  const handleVerify = async (transactionId) => {
+    try {
+      const response = await fetch(`https://localhost:7150/api/Employee/verify/${transactionId}`, {
+        method: 'PUT',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to verify transaction');
+      }
+
+      setTransactions(prevTransactions =>
+        prevTransactions.map(tx =>
+          tx.id === transactionId ? { ...tx, status: 'Verified' } : tx
+        )
+      );
+      setSuccess('Transaction verified successfully');
+      closeModal(); // Close modal after action
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Handle decline action (API call to decline the transaction)
+  const handleDecline = async (transactionId) => {
+    try {
+      const response = await fetch(`https://localhost:7150/api/Employee/verify/${transactionId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status: 'Declined' }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to decline transaction');
+      }
+
+      setTransactions(prevTransactions =>
+        prevTransactions.map(tx =>
+          tx.id === transactionId ? { ...tx, status: 'Declined' } : tx
+        )
+      );
+      setSuccess('Transaction declined');
+      closeModal(); // Close modal after action
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -74,7 +128,7 @@ function EmployeeDashboardPage() {
                 <td>{transaction.status}</td>
                 <td>
                   <button
-                    disabled={transaction.status === 'verified' || transaction.status === 'flagged'}
+                    disabled={transaction.status === 'Verified' || transaction.status === 'Declined'}
                     onClick={() => openModal(transaction)}
                   >
                     Open
@@ -85,7 +139,7 @@ function EmployeeDashboardPage() {
           </tbody>
         </table>
 
-        {/* Modal for verifying or flagging a transaction */}
+        {/* Modal for updating transaction status */}
         {isModalOpen && selectedTransaction && (
           <div className="modal-overlay">
             <div className="modal-content">
@@ -93,10 +147,18 @@ function EmployeeDashboardPage() {
               <p><strong>Amount:</strong> {selectedTransaction.amount}</p>
               <p><strong>Currency:</strong> {selectedTransaction.currency}</p>
               <p><strong>Provider:</strong> {selectedTransaction.provider}</p>
-              <p><strong>Status:</strong> {selectedTransaction.status}</p>
+              <p><strong>Status:</strong>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)} // Update status based on dropdown selection
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Verified">Verified</option>
+                  <option value="Declined">Declined</option>
+                </select>
+              </p>
 
-              <button onClick={() => handleVerify(selectedTransaction.id)}>Verify</button>
-              <button onClick={() => handleFlag(selectedTransaction.id)}>Flag</button>
+              <button onClick={handleSave}>Save</button>
               <button onClick={closeModal}>Close</button>
             </div>
           </div>
