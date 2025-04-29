@@ -87,7 +87,7 @@ function RegisterPage() {
           <input
             type="text"
             name="fullName"
-            value={formData.fullName}
+            value="Zungu SBAA"
             onChange={handleChange}
           />
           {errors.FullName && <div className="error-message">{errors.FullName[0]}</div>}
@@ -98,7 +98,7 @@ function RegisterPage() {
           <input
             type="number"
             name="accountNumber"
-            value={formData.accountNumber}
+            value="258147369"
             onChange={handleChange}
           />
           {errors.AccountNumber && <div className="error-message">{errors.AccountNumber[0]}</div>}
@@ -109,7 +109,7 @@ function RegisterPage() {
           <input
             type="number"
             name="idNumber"
-            value={formData.idNumber}
+            value="258147369"
             onChange={handleChange}
           />
           {errors.IdNumber && <div className="error-message">{errors.IdNumber[0]}</div>}
@@ -120,7 +120,7 @@ function RegisterPage() {
           <input
             type="password"
             name="password"
-            value={formData.password}
+            value="258147369"
             onChange={handleChange}
           />
           {errors.Password && <div className="error-message">{errors.Password[0]}</div>}

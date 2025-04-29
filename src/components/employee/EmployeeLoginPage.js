@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../AuthContext'; // adjust path as needed
-import './css/EmployeeLoginPage.css'; // Optional: your styling
+import './css/EmployeeLoginPage.css';
 
 function EmployeeLoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
-
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -23,12 +20,28 @@ function EmployeeLoginPage() {
     e.preventDefault();
 
     try {
-      await login(formData, 'employee'); // 'employee' tells AuthContext to use the employee endpoint
-      setError('');
-      navigate('/employee-dashboard'); // Redirect on successful login
+      const response = await fetch('https://localhost:7150/api/employee/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', formData.username);
+        setError('');
+        navigate('/employee-dashboard');
+      } else if (response.status === 400) {
+        const errorData = await response.json();
+        const errors = Object.values(errorData).flat().join(' ');
+        setError(errors);
+      } else {
+        setError('Login failed. Please check your credentials.');
+      }
     } catch (err) {
       console.error(err);
-      setError('Login failed. Please check your credentials.');
+      setError('An error occurred while logging in.');
     }
   };
 
