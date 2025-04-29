@@ -19,42 +19,32 @@ function LoginPage() {
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch('https://localhost:7150/api/Customers/Login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    e.preventDefault();
+
+    const loginData = {
         fullName: formData.fullName,
         accountNumber: formData.accountNumber,
-        password: formData.password,
-      }),
-    });
+        password: formData.password, // Send plain password here
+    };
 
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Login success:', data);
+    try {
+        const response = await fetch('https://localhost:7150/api/Customers/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(loginData), // Ensure the body contains fullName, accountNumber, and password
+        });
 
-      localStorage.setItem('token', data.token);
-      setUser({
-        fullName: data.customer.fullName,
-        accountNumber: data.customer.accountNumber,
-        id: data.customer.id,
-      });
-
-      navigate('/dashboard');
-    } else {
-      const errorData = await response.json();
-      if (errorData.errors) {
-        alert(errorData.errors); // Set error state
-      } else {
-        alert(errorData.message || 'Login failed');
-      }
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Login successful:', data);
+            navigate('/dashboard'); // or whatever the next route is
+        } else {
+            const errorData = await response.json();
+            alert(errorData.message || 'Login failed');
+        }
+    } catch (err) {
+        alert('Something went wrong.');
     }
-  } catch (err) {
-    console.error('Login Error:', err);
-    alert('Something went wrong. Please try again.');
-  }
 };
 
 
