@@ -16,8 +16,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  const login = async (credentials) => {
-    const response = await fetch('https://localhost:7150/api/Customers/Login', {
+  const login = async (credentials, userType = 'customer') => {
+    const endpoint =
+      userType === 'employee'
+        ? 'https://localhost:7150/api/Employee/login'
+        : 'https://localhost:7150/api/Customers/Login';
+
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
@@ -26,13 +31,24 @@ export const AuthProvider = ({ children }) => {
     if (!response.ok) throw new Error('Login failed');
 
     const data = await response.json();
-    localStorage.setItem('token', data.token); 
+    localStorage.setItem('token', data.token);
 
-    const loggedInUser = {
-      fullName: data.customer.fullName,
-      accountNumber: data.customer.accountNumber,
-      id: data.customer.id,
-    };
+    let loggedInUser;
+
+    if (userType === 'employee') {
+      loggedInUser = {
+        id: data.employee.id,
+        username: data.employee.username,
+        role: 'employee',
+      };
+    } else {
+      loggedInUser = {
+        fullName: data.customer.fullName,
+        accountNumber: data.customer.accountNumber,
+        id: data.customer.id,
+        role: 'customer',
+      };
+    }
 
     setUser(loggedInUser);
     console.log('User set in context:', loggedInUser);

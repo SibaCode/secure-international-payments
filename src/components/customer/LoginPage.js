@@ -17,36 +17,37 @@ function LoginPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   const [errors, setErrors] = useState({});
-
+  const [error, setError] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const loginData = {
-        fullName: formData.fullName,
-        accountNumber: formData.accountNumber,
-        password: formData.password, // Send plain password here
+  
+    const registerData = {
+      fullName: formData.fullName,
+      idNumber: formData.idNumber,
+      accountNumber: formData.accountNumber,
+      password: formData.password,
     };
-
+  
     try {
-        const response = await fetch('https://localhost:7150/api/Customers/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(loginData), // Ensure the body contains fullName, accountNumber, and password
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Login successful:', data);
-            navigate('/dashboard'); // or whatever the next route is
-        } else {
-            const errorData = await response.json();
-            alert(errorData.message || 'Login failed');
-        }
+      const response = await fetch('https://localhost:7150/api/Customers/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registerData),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setError(''); // clear any old errors
+        navigate('/login'); // after registration, redirect to login page maybe
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Registration failed');
+      }
     } catch (err) {
-        alert('Something went wrong.');
+      setError('Registration failed. Please try again.');
     }
-};
-
+  };
+  
 
   return (
     <div className="login-container">
@@ -85,6 +86,12 @@ function LoginPage() {
 
         </div>
         <button type="submit" className="login-btn">Login</button>
+        {error && (
+    <div style={{ color: 'red', marginTop: '10px' }}>
+      {error}
+    </div>
+  )}
+  
       </form>
     </div>
   );

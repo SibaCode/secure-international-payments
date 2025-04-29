@@ -1,50 +1,39 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './../employee/css/EmployeeLogin.css'; // Add custom styles
+import { useAuth } from '../../AuthContext'; // adjust path as needed
+import './css/EmployeeLoginPage.css'; // Optional: your styling
 
 function EmployeeLoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
+
   const [error, setError] = useState('');
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/employees/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token); // Store the token
-        navigate('/employee-dashboard'); // Redirect to the employee dashboard
-      } else {
-        const error = await response.json();
-        setError(error.message || 'Login failed');
-      }
+    try {
+      await login(formData, 'employee'); // 'employee' tells AuthContext to use the employee endpoint
+      setError('');
+      navigate('/employee-dashboard'); // Redirect on successful login
     } catch (err) {
       console.error(err);
-      setError('Something went wrong.');
+      setError('Login failed. Please check your credentials.');
     }
   };
 
   return (
-    <div className="employee-login-container">
+    <div className="login-container">
       <h2>Employee Login</h2>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
@@ -53,7 +42,7 @@ function EmployeeLoginPage() {
             type="text"
             name="username"
             value={formData.username}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -63,13 +52,13 @@ function EmployeeLoginPage() {
             type="password"
             name="password"
             value={formData.password}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
           />
         </div>
         <button type="submit" className="login-btn">Login</button>
+        {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }

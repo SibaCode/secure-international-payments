@@ -60,7 +60,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={ <DashboardPage />}  />
-        <Route path="/employee-login" element={<EmployeeLoginPage />} /> {/* Employee login route */}
+        <Route path="/employee" element={<EmployeeLoginPage />} /> {/* Employee login route */}
         <Route path="/employee-dashboard" element={<EmployeeDashboardPage />} /> {/* Employee dashboard route */}
 
       {/* Protected Routes */}
