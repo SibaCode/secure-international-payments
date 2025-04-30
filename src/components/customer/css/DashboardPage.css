@@ -273,6 +273,25 @@ button:hover {
   transition: background-color 0.3s ease;
 }
 
+
+
+.status-pill {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: white;
+  display: inline-block;
+  text-align: center;
+}
+
+.status-pill.verified {
+  background-color: green;
+}
+
+.status-pill.pending {
+  background-color: gray;
+}
+
 .send-btn-pill:disabled {
   background-color: #f44336; /* Light gray when disabled */
   cursor: not-allowed;
