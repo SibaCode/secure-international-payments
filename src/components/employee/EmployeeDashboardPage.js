@@ -13,6 +13,7 @@ const EmployeeDashboardPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('employeeToken');
@@ -34,7 +35,24 @@ const EmployeeDashboardPage = () => {
       setError('Error fetching transactions');
     }
   };
-
+  const handleSendToSWIFT = async (tx) => {
+    try {
+      const response = await fetch(`https://localhost:7150/api/TransactionDetails/submit/${tx.id}`, {
+        method: 'PUT'
+      });
+      if (response.ok) {
+        const updatedTx = await response.json();
+        // Update UI state here (e.g., refetch transactions or update locally)
+        alert(`Transaction ${updatedTx.id} submitted to SWIFT`);
+      } else {
+        alert('Failed to submit to SWIFT.');
+      }
+    } catch (error) {
+      console.error('Error sending to SWIFT:', error);
+    }
+  };
+ 
+  
   const openModal = (transaction) => {
     setSelectedTransaction(transaction);
     setShowModal(true);
@@ -46,34 +64,32 @@ const EmployeeDashboardPage = () => {
     setError('');
     setSuccess('');
   };
-
   const handleVerify = async () => {
     if (selectedTransaction.status === 'Verified') {
       setError('This transaction has already been verified.');
       return;
     }
-
+  
     try {
       const response = await fetch(`https://localhost:7150/api/TransactionDetails/verify/${selectedTransaction.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });
-
+  
       if (!response.ok) throw new Error('Verification failed');
-
+  
       const updatedTransaction = await response.json();
-      setTransactions(prevTransactions =>
-        prevTransactions.map(transaction =>
-          transaction.id === updatedTransaction.id ? updatedTransaction : transaction
-        )
+      setTransactions(prev =>
+        prev.map(t => (t.id === updatedTransaction.id ? updatedTransaction : t))
       );
       setSuccess('Transaction verified successfully!');
-      closeModal();
+      setIsReadyToSubmit(true); // 👈 Show the next step
     } catch (err) {
       console.error(err);
       setError('Verification failed. Please try again.');
     }
   };
+  
 
   if (!isAuthenticated) return <Navigate to="/employee-login" />;
 
@@ -95,10 +111,8 @@ const EmployeeDashboardPage = () => {
             <th>ID</th>
             <th>Amount</th>
             <th>Currency</th>
-            <th>Provider</th>
+            <th>Swift Code</th>
             <th>Status</th>
-            <th>Date</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -107,17 +121,24 @@ const EmployeeDashboardPage = () => {
               <td>{tx.id}</td>
               <td>{tx.amount}</td>
               <td>{tx.currency}</td>
-              <td>{tx.provider}</td>
-              <td>{tx.status}</td>
-              <td>{new Date(tx.date).toLocaleString()}</td>
+              <td>{tx.swiftCode}</td>
               <td>
-               <button
-                onClick={() => openModal(tx)}
-                disabled={tx.status === 'Verified'}
-                className={tx.status === 'Verified' ? 'verified-btn' : 'verify-btn'}
-              >
-                {tx.status === 'Verified' ? 'Verified' : 'Verify'}
-              </button>
+              {tx.status === 'Pending' && (
+  <button className="verify-btn" onClick={() => openModal(tx)}>
+    Verify
+  </button>
+)}
+
+{tx.status === 'Verified' && (
+  <button className="send-btn" onClick={() => handleSendToSWIFT(tx)}>
+    Send to SWIFT
+  </button>
+)}
+
+{tx.status === 'Submitted' && (
+  <span className="submitted-badge">✔ Submitted</span>
+)}
+
 
               </td>
             </tr>
@@ -132,17 +153,15 @@ const EmployeeDashboardPage = () => {
             <p><strong>ID:</strong> {selectedTransaction.id}</p>
             <p><strong>Amount:</strong> {selectedTransaction.amount}</p>
             <p><strong>Currency:</strong> {selectedTransaction.currency}</p>
-            <p><strong>Provider:</strong> {selectedTransaction.provider}</p>
-            <p><strong>Status:</strong> {selectedTransaction.status}</p>
-            <p><strong>Date:</strong> {new Date(selectedTransaction.date).toLocaleString()}</p>
+            <p><strong>SWIFT Code:</strong> {selectedTransaction.swiftCode}</p>
 
-            {selectedTransaction.status === 'Verified' ? (
-  <p>✅ This transaction has already been verified.</p>
-) : (
-  <button className="verify-btn" onClick={handleVerify}>Confirm Verification</button>
-)}
-<br />
-<button className="close-btn" onClick={closeModal}>Close</button>
+            {selectedTransaction.status === 'Verified' && !isReadyToSubmit ? (
+            <p>✅ This transaction has already been verified.</p>
+          ) : !isReadyToSubmit ? (
+            <button className="confirm-btn" onClick={handleVerify}>Confirm Verification</button>
+          ) : (
+            <button className="submit-swift-btn" onClick={closeModal}>Submit to SWIFT</button>
+          )}
 
           </div>
         </div>

@@ -12,7 +12,6 @@ function DashboardPage() {
   const [newTransaction, setNewTransaction] = useState({
     amount: '',
     currency: '',
-    provider: 'SWIFT',
     accountNumber: '',
     swiftCode: '',
   });
@@ -68,7 +67,6 @@ function DashboardPage() {
       setNewTransaction({
         amount: '',
         currency: '',
-        provider: 'SWIFT',
         accountNumber: '',  
         swiftCode: '',
       });
@@ -99,7 +97,7 @@ function DashboardPage() {
             <tr>
               <th>Amount</th>
               <th>Currency</th>
-              <th>Provider</th>
+              <th>Swift Code</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -108,7 +106,7 @@ function DashboardPage() {
               <tr key={transaction.id}>
                 <td>{transaction.amount}</td>
                 <td>{transaction.currency}</td>
-                <td>{transaction.provider}</td>
+                <td>{transaction.swiftCode}</td>
                 <td>{transaction.status}</td>
               </tr>
             ))}
@@ -147,15 +145,7 @@ function DashboardPage() {
             {/* Add more currencies as needed */}
           </select>
         </div>
-        <div>
-          <label>Provider</label>
-          <input
-            type="text"
-            name="provider"
-            value="SWIFT"
-            readOnly
-          />
-        </div>
+       
         <div>
           <label>SWIFT Code</label>
           <input

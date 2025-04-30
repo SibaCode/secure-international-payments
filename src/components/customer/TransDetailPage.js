@@ -12,7 +12,7 @@ const TransDetailPage = () => {
     id: 0,
     amount: '',
     currency: '',
-    provider: '',
+    swiftCode: '',
     status: '',
     date: ''
   });
@@ -44,7 +44,7 @@ const TransDetailPage = () => {
       } else {
         await axios.post(apiBaseUrl, form);
       }
-      setForm({ id: 0, amount: '', currency: '', provider: '', status: '', date: '' });
+      setForm({ id: 0, amount: '', currency: '', swiftCode: '', status: '', date: '' });
       setEditingId(null);
       setIsModalOpen(false); // Close the modal after submission
       fetchTransactions();
@@ -70,7 +70,7 @@ const TransDetailPage = () => {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
-    setForm({ id: 0, amount: '', currency: '', provider: '', status: '', date: '' });
+    setForm({ id: 0, amount: '', currency: '', swiftCode: '', status: '', date: '' });
     setEditingId(null);
   };
 
@@ -93,7 +93,7 @@ return (
             <th>ID</th>
             <th>Amount</th>
             <th>Currency</th>
-            <th>Provider</th>
+            <th>Swift Code</th>
             <th>Status</th>
             <th>Date</th>
             <th>Actions</th>
@@ -105,7 +105,7 @@ return (
               <td>{tx.id}</td>
               <td>{tx.amount}</td>
               <td>{tx.currency}</td>
-              <td>{tx.provider}</td>
+              <td>{tx.swiftCode}</td>
               <td>{tx.status}</td>
               <td>{new Date(tx.date).toLocaleString()}</td>
               <td>
@@ -132,10 +132,7 @@ return (
           <label>Currency:</label>
           <input type="text" name="currency" value={form.currency} onChange={handleChange} required />
         </div>
-        <div>
-          <label>Provider:</label>
-          <input type="text" name="provider" value={form.provider} onChange={handleChange} required />
-        </div>
+       
         <div>
           <label>Status:</label>
           <input type="text" name="status" value={form.status} onChange={handleChange} required />
