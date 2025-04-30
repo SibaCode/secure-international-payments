@@ -87,7 +87,7 @@ function RegisterPage() {
           <input
             type="text"
             name="fullName"
-            value="{formData.fullName}"
+            value={formData.fullName}
             onChange={handleChange}
           />
           {errors.FullName && <div className="error-message">{errors.FullName[0]}</div>}

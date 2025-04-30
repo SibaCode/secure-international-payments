@@ -1,53 +1,46 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../src/AuthContext';
+import { useAuth } from '../../AuthContext'; // Make sure the path is correct
 import './../customer/css/LoginPage.css'; // Your styling
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { login } = useAuth(); // Only get login from context
+
   const [formData, setFormData] = useState({
     fullName: '',
     accountNumber: '',
     password: '',
   });
 
+  const [error, setError] = useState(''); // State for handling error message
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const [errors, setErrors] = useState({});
-  const [error, setError] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const registerData = {
-      fullName: formData.fullName,
-      idNumber: formData.idNumber,
-      accountNumber: formData.accountNumber,
-      password: formData.password,
-    };
-  
+
     try {
-      const response = await fetch('https://localhost:7150/api/Customers/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerData),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        setError(''); // clear any old errors
-        navigate('/login'); // after registration, redirect to login page maybe
+      const userData = await login(formData, 'customer'); // ✅ Let context handle login
+
+      setError(''); // Clear any previous error message
+
+      // Redirect based on role after login
+      if (userData?.role === "customer") {
+        navigate('/dashboard');
+      } else if (userData?.role === "employee") {
+        navigate('/employee-dashboard');
       } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Registration failed');
+        navigate('/'); // Fallback route
       }
+
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError(err.message || 'Login failed. Please try again.');
     }
   };
-  
 
   return (
     <div className="login-container">
@@ -60,7 +53,6 @@ function LoginPage() {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
-            
           />
         </div>
         <div className="form-group">
@@ -70,7 +62,6 @@ function LoginPage() {
             name="accountNumber"
             value={formData.accountNumber}
             onChange={handleChange}
-            
           />
         </div>
         <div className="form-group">
@@ -80,18 +71,14 @@ function LoginPage() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            
           />
-                    {errors.password && <div className="error-message">{errors.password}</div>}
-
         </div>
         <button type="submit" className="login-btn">Login</button>
         {error && (
-    <div style={{ color: 'red', marginTop: '10px' }}>
-      {error}
-    </div>
-  )}
-  
+          <div style={{ color: 'red', marginTop: '10px' }}>
+            {error}
+          </div>
+        )}
       </form>
     </div>
   );

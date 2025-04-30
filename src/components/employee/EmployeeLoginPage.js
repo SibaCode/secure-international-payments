@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/EmployeeLoginPage.css';
+import { useAuth } from '../../../src/AuthContext';
 
 function EmployeeLoginPage() {
   const navigate = useNavigate();
@@ -10,7 +11,10 @@ function EmployeeLoginPage() {
   });
 
   const [error, setError] = useState('');
+  const { user, logout , role } = useAuth();
 
+  const { setUser } = useAuth();
+  const { login } = useAuth(); // Get login from context
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -28,6 +32,8 @@ function EmployeeLoginPage() {
 
       if (response.ok) {
         const data = await response.json();
+        login(data.employee, 'employee');
+navigate('/employee-dashboard');
         localStorage.setItem('token', data.token);
         localStorage.setItem('username', formData.username);
         setError('');
@@ -48,6 +54,17 @@ function EmployeeLoginPage() {
   return (
     <div className="login-container">
       <h2>Employee Login</h2>
+      <div>
+      <h2>Welcome, {user.fullName}</h2>
+      <p>Account Number: {user.accountNumber}</p>
+      {/* <button onClick={logout}>Logout</button> */}
+      <button onClick={() => {
+  logout();
+  navigate('/');
+}}>
+  Logout
+</button>
+    </div>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
           <label>Username</label>
