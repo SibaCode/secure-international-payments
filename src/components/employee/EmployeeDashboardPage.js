@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
+import './../employee/css/EmployeeDashboardPage.css';
+import Navbar from '../../components/Navbar';
 
 const apiBaseUrl = 'https://localhost:7150/api/TransactionDetails';
 
@@ -76,7 +78,11 @@ const EmployeeDashboardPage = () => {
   if (!isAuthenticated) return <Navigate to="/employee-login" />;
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 20 }}>
+    
+    <div>
+    <Navbar userType="Employee" />
+    <div className="dashboard-container">
+      
       <h2>Employee Dashboard</h2>
 
       {/* Success and Error Messages */}
@@ -105,12 +111,14 @@ const EmployeeDashboardPage = () => {
               <td>{tx.status}</td>
               <td>{new Date(tx.date).toLocaleString()}</td>
               <td>
-                <button
-                  onClick={() => openModal(tx)}
-                  disabled={tx.status === 'Verified'}
-                >
-                  {tx.status === 'Verified' ? 'Verified' : 'Verify'}
-                </button>
+               <button
+                onClick={() => openModal(tx)}
+                disabled={tx.status === 'Verified'}
+                className={tx.status === 'Verified' ? 'verified-btn' : 'verify-btn'}
+              >
+                {tx.status === 'Verified' ? 'Verified' : 'Verify'}
+              </button>
+
               </td>
             </tr>
           ))}
@@ -129,16 +137,19 @@ const EmployeeDashboardPage = () => {
             <p><strong>Date:</strong> {new Date(selectedTransaction.date).toLocaleString()}</p>
 
             {selectedTransaction.status === 'Verified' ? (
-              <p>✅ This transaction has already been verified.</p>
-            ) : (
-              <button onClick={handleVerify}>Confirm Verification</button>
-            )}
-            <br />
-            <button onClick={closeModal} style={{ marginTop: '10px' }}>Close</button>
+  <p>✅ This transaction has already been verified.</p>
+) : (
+  <button className="verify-btn" onClick={handleVerify}>Confirm Verification</button>
+)}
+<br />
+<button className="close-btn" onClick={closeModal}>Close</button>
+
           </div>
         </div>
       )}
     </div>
+  </div>
+    
   );
 };
 
