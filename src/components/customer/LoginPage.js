@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../AuthContext'; // Make sure the path is correct
-import './../customer/css/LoginPage.css'; // Your styling
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../AuthContext';
+import './../customer/css/LoginPage.css';
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Only get login from context
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -13,32 +13,20 @@ function LoginPage() {
     password: '',
   });
 
-  const [error, setError] = useState(''); // State for handling error message
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const userData = await login(formData, 'customer'); // ✅ Let context handle login
-
-      setError(''); // Clear any previous error message
-
-      // Redirect based on role after login
-      if (userData?.role === "customer") {
-        navigate('/dashboard');
-      } else if (userData?.role === "employee") {
-        navigate('/employee-dashboard');
-      } else {
-        navigate('/'); // Fallback route
-      }
-
+      const userData = await login(formData, 'customer');
+      setError('');
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || 'Login failed');
     }
   };
 
@@ -48,38 +36,20 @@ function LoginPage() {
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
           <label>Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-          />
+          <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} />
         </div>
         <div className="form-group">
           <label>Account Number</label>
-          <input
-            type="text"
-            name="accountNumber"
-            value={formData.accountNumber}
-            onChange={handleChange}
-          />
+          <input type="text" name="accountNumber" value={formData.accountNumber} onChange={handleChange} />
         </div>
         <div className="form-group">
           <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <input type="password" name="password" value={formData.password} onChange={handleChange} />
         </div>
         <button type="submit" className="login-btn">Login</button>
-        {error && (
-          <div style={{ color: 'red', marginTop: '10px' }}>
-            {error}
-          </div>
-        )}
+        {error && <div style={{ color: 'red' }}>{error}</div>}
       </form>
+      <p className="register-link">Not registered? <Link to="/register">Register here</Link></p>
     </div>
   );
 }
