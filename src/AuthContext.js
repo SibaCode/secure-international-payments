@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', data.token); // Store token
 
     let loggedInUser;
-
+console.log("siba")
     if (userType === 'employee') {
       loggedInUser = {
         id: data.employee.id,

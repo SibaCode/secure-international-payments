@@ -1,96 +1,50 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './css/EmployeeLoginPage.css';
-import { useAuth } from '../../../src/AuthContext';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // For routing to the dashboard
 
-function EmployeeLoginPage() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+const EmployeeLoginPage = () => {
+  const [form, setForm] = useState({
     username: '',
     password: '',
   });
-
   const [error, setError] = useState('');
-  const { user, logout , role } = useAuth();
+  const navigate = useNavigate(); // useNavigate hook instead of useHistory in v6
 
-  const { setUser } = useAuth();
-  const { login } = useAuth(); // Get login from context
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await fetch('https://localhost:7150/api/employee/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        login(data.employee, 'employee');
-navigate('/employee-dashboard');
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('username', formData.username);
-        setError('');
-        navigate('/employee-dashboard');
-      } else if (response.status === 400) {
-        const errorData = await response.json();
-        const errors = Object.values(errorData).flat().join(' ');
-        setError(errors);
-      } else {
-        setError('Login failed. Please check your credentials.');
+      const res = await axios.post('https://localhost:7150/api/employee/login', form); // Adjust the API URL
+      if (res.data.token) {
+        localStorage.setItem('employeeToken', res.data.token); // Store the token in localStorage
+        navigate('/employee-dashboard'); // Redirect to employee dashboard
       }
     } catch (err) {
-      console.error(err);
-      setError('An error occurred while logging in.');
+      setError('Invalid login credentials');
+      console.error('Login error:', err);
     }
   };
 
   return (
-    <div className="login-container">
+    <div style={{ maxWidth: 400, margin: '0 auto', padding: 20 }}>
       <h2>Employee Login</h2>
-      <div>
-      <h2>Welcome, {user.fullName}</h2>
-      <p>Account Number: {user.accountNumber}</p>
-      {/* <button onClick={logout}>Logout</button> */}
-      <button onClick={() => {
-  logout();
-  navigate('/');
-}}>
-  Logout
-</button>
-    </div>
-      <form onSubmit={handleSubmit} className="login-form">
-        <div className="form-group">
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Username:</label>
+          <input type="text" name="username" value={form.username} onChange={handleChange} required />
         </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+        <div>
+          <label>Password:</label>
+          <input type="password" name="password" value={form.password} onChange={handleChange} required />
         </div>
-        <button type="submit" className="login-btn">Login</button>
-        {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <button type="submit">Login</button>
       </form>
     </div>
   );
-}
+};
 
 export default EmployeeLoginPage;

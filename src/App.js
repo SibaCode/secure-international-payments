@@ -15,7 +15,6 @@ function App() {
 
   return (
     <div className="App">
-      <h1>App Loaded</h1> {/* Add this as a quick visual indicator */}
       <AuthProvider>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
