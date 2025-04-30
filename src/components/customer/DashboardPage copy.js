@@ -23,7 +23,7 @@ function DashboardPage() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch(`https://localhost:7150/api/TransactionDetails`);
+        const response = await fetch(`https://localhost:7150/api/Transactions/customer/${user.accountNumber}`);
         if (!response.ok) throw new Error('Failed to fetch transactions');
         const data = await response.json();
         setTransactions(data);

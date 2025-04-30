@@ -70,7 +70,7 @@ const TransDetailPage = () => {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
-    setForm({ id: 0, amount: '', currency: '', swiftCode: '', status: 'Pending', date: new Date().toISOString().slice(0, 16) });
+    setForm({ id: 0, amount: '', currency: '', swiftCode: '', status: '', date: '' });
     setEditingId(null);
   };
 
@@ -85,7 +85,7 @@ return (
         {error && <Notification message={error} type="error" />} */}
 
         <h3>Transaction History</h3>
-        <button className="verify-btn" onClick={toggleModal}>Add New Transaction</button>
+        <button onClick={toggleModal}>Add New Transaction</button>
 
         <table border="1" width="100%">
         <thead>
@@ -94,6 +94,8 @@ return (
             <th>Amount</th>
             <th>Currency</th>
             <th>Swift Code</th>
+            <th>Status</th>
+            <th>Date</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -104,9 +106,11 @@ return (
               <td>{tx.amount}</td>
               <td>{tx.currency}</td>
               <td>{tx.swiftCode}</td>
+              <td>{tx.status}</td>
+              <td>{new Date(tx.date).toLocaleString()}</td>
               <td>
-                <button className="submitted-badge"onClick={() => handleEdit(tx)}>Edit</button>
-                <button  className="verify-btn" onClick={() => handleDelete(tx.id)}>Delete</button>
+                <button onClick={() => handleEdit(tx)}>Edit</button>
+                <button onClick={() => handleDelete(tx.id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -128,11 +132,16 @@ return (
           <label>Currency:</label>
           <input type="text" name="currency" value={form.currency} onChange={handleChange} required />
         </div>
+       
         <div>
-          <label>SWIFT Code:</label>
-          <input type="text" name="swiftCode" value={form.swiftCode} onChange={handleChange} required />
+          <label>Status:</label>
+          <input type="text" name="status" value={form.status} onChange={handleChange} required />
         </div>
-        <button  type="submit">{editingId ? 'Update' : 'Create'}</button>
+        <div>
+          <label>Date:</label>
+          <input type="datetime-local" name="date" value={form.date} onChange={handleChange} required />
+        </div>
+        <button type="submit">{editingId ? 'Update' : 'Create'}</button>
         <button onClick={toggleModal} type="button">Close</button>
       </form>
     </div>

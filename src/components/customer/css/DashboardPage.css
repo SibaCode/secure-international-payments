@@ -1,111 +1,377 @@
-/* DashboardPage.css */
 .dashboard-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Poppins', sans-serif;
-  }
-  .error-message {
-    color: red;
-    font-size: 0.9em;
-    margin-top: 4px;
-  }
-  h2, h3 {
-    text-align: center;
-    color: #333;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  table th, table td {
-    padding: 12px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-  
-  table th {
-    background-color: #f4f4f4;
-    color: #333;
-  }
-  
-  table td {
-    background-color: #fff;
-  }
-  
-  form {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
-  }
-  
-  form .form-group {
-    margin-bottom: 15px;
-  }
-  
-  form .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  form input,
-  form select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  form button {
-    background-color: #FF6F00; /* Orange color */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-    margin-top: 20px;
-  }
-  
-  form button:hover {
-    background-color: #E65C00; /* Darker orange for hover effect */
-  }
-  
-  .error-message {
-    color: red;
-    text-align: center;
-    margin-top: 20px;
-    font-size: 16px;
-  }
-  /* Modal Styles */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+.transactions-table {
+  margin: 20px auto;
+  width: 80%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-table th, .transactions-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.transactions-table th {
+  background-color: #f5f5f5;
+}
+
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,0,0,0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .modal-content {
-  background-color: white;
+  background: white;
   padding: 20px;
-  border-radius: 5px;
-  width: 400px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  margin: 0 10px;
+}
+/* DashboardPage.css */
+.dashboard-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 4px;
+}
+h2, h3 {
+  text-align: center;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+table td {
+  background-color: #fff;
+}
+
+form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+form .form-group {
+  margin-bottom: 15px;
+}
+
+form .form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+form button {
+  background-color: #FF6F00; /* Orange color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+form button:hover {
+  background-color: #E65C00; /* Darker orange for hover effect */
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+}
+/* Modal Styles */
+.modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.modal-content {
+background-color: white;
+padding: 20px;
+border-radius: 5px;
+width: 400px;
 }
 
 button {
-  margin-top: 10px;
+margin-top: 10px;
 }
+/* Button Styles */
+.verify-btn {
+  background-color: #ff6f00; /* Orange color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  display: inline-block;
+  margin: 5px;
+}
+
+.verify-btn:hover {
+  background-color: #e65c00; /* Darker orange */
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+.verify-btn:active {
+  background-color: #d64e00; /* Even darker orange when clicked */
+}
+
+.verify-btn:disabled {
+  background-color: #ccc; /* Disabled state */
+  cursor: not-allowed;
+}
+
+.verify-btn:disabled:hover {
+  background-color: #ccc;
+  transform: none;
+}
+/* Button Styles */
+.verify-btn {
+  background-color: #ff6f00; /* Orange color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.verified-btn {
+  background-color: #4caf50; /* Green color for verified */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button:disabled {
+  background-color: #ccc; /* Gray for disabled */
+  cursor: not-allowed;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Transparent black background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styling */
+button {
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover effect */
+button:hover {
+  transform: scale(1.05);
+}
+
+/* Confirm Verification Button */
+.verify-btn {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  font-weight: bold;
+}
+.send-btn-pill {
+  background-color: #4CAF50; /* Green color for a 'success' style */
+  color: white;
+  padding: 10px 20px; /* Padding for the pill shape */
+  border: none;
+  border-radius: 50px; /* Rounded edges for the pill effect */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.send-btn-pill:disabled {
+  background-color: #f44336; /* Light gray when disabled */
+  cursor: not-allowed;
+}
+
+/* Close Button */
+.close-btn {
+  background-color: #f44336; /* Red */
+  color: white;
+  font-weight: bold;
+}
+.submitted-badge {
+  color: green;
+  font-weight: bold;
+}
+.confirm-btn {
+  background-color: green;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.submit-swift-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+/* Confirm Verification Button Hover */
+.verify-btn:hover {
+  background-color: #45a049;
+}
+
+/* Close Button Hover */
+.close-btn:hover {
+  background-color: #e53935;
+}
+.transaction-table-container {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.transaction-table th {
+  background-color: #4CAF50; /* Green header for nice contrast */
+  color: white;
+}
+
+.transaction-table tr:hover {
+  background-color: #f1f1f1; /* Light gray hover effect */
+}
+
+.transaction-table td button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.transaction-table td button:hover {
+  background-color: #0056b3;
+}
+
+.send-btn-pill {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
