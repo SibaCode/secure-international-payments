@@ -109,6 +109,7 @@ const EmployeeDashboardPage = () => {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Account Number</th>
             <th>Amount</th>
             <th>Currency</th>
             <th>Swift Code</th>
@@ -119,9 +120,11 @@ const EmployeeDashboardPage = () => {
           {transactions.map((tx) => (
             <tr key={tx.id}>
               <td>{tx.id}</td>
+              <td>{tx.accountNumber}</td>
               <td>{tx.amount}</td>
               <td>{tx.currency}</td>
               <td>{tx.swiftCode}</td>
+
               <td>
               {tx.status === 'Pending' && (
   <button className="verify-btn" onClick={() => openModal(tx)}>
@@ -157,6 +160,7 @@ const EmployeeDashboardPage = () => {
           <div style={modalContentStyle}>
             <h3>Transaction Details</h3>
             <p><strong>ID:</strong> {selectedTransaction.id}</p>
+            <p><strong>Account Number:</strong> {selectedTransaction.accountNumber}</p>
             <p><strong>Amount:</strong> {selectedTransaction.amount}</p>
             <p><strong>Currency:</strong> {selectedTransaction.currency}</p>
             <p><strong>SWIFT Code:</strong> {selectedTransaction.swiftCode}</p>
