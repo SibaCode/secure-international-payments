@@ -25,18 +25,20 @@ const DashboardPage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (user?.id) fetchTransactions();
-  }, [user]);
-
-  const fetchTransactions = async () => {
-    try {
-      const res = await axios.get(apiBaseUrl);
-      setTransactions(res.data);
-    } catch (err) {
-      console.error(err);
-      setError('Failed to load transactions');
+    if (user?.id) {
+      console.log('User details:', user.accountNumber); // Log user details to console
+      fetchTransactions();
     }
-  };
+  }, [user]);
+  const fetchTransactions = async () => {
+  try {
+    const res = await axios.get(`${apiBaseUrl}/byAccount/${user.accountNumber}`);
+    setTransactions(res.data);
+  } catch (err) {
+    console.error(err);
+    setError('Failed to load transactions');
+  }
+};
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -115,7 +117,6 @@ const DashboardPage = () => {
       <div className="dashboard-container">
         <h2>Customer Dashboard</h2>
         <h3>Welcome, {user?.fullName}</h3>
-
         {success && <Notification message={success} type="success" />}
         {error && <Notification message={error} type="error" />}
 
@@ -141,10 +142,10 @@ const DashboardPage = () => {
                 <td>{tx.currency}</td>
                 <td>{tx.swiftCode}</td>
                 <td>
-                <span className={`status-pill ${tx.status.toLowerCase()}`}>
-                  {tx.status === 'Verified' ? 'Verified' : 'Pending'}
-                </span>
-              </td>
+                  <span className={`status-pill ${tx.status.toLowerCase()}`}>
+                    {tx.status === 'Verified' ? 'Verified' : 'Pending'}
+                  </span>
+                </td>
 
                 {/* <td>
                   <button className="submitted-badge" onClick={() => handleEdit(tx)}>Edit</button>
