@@ -130,10 +130,16 @@ const EmployeeDashboardPage = () => {
 )}
 
 {tx.status === 'Verified' && (
-  <button className="send-btn" onClick={() => handleSendToSWIFT(tx)}>
-    Send to SWIFT
+  <button
+    className="send-btn-pill"
+    disabled
+    onClick={() => handleSendToSWIFT(tx)}
+  >
+    Submitted to SWIFT
   </button>
 )}
+
+
 
 {tx.status === 'Submitted' && (
   <span className="submitted-badge">✔ Submitted</span>

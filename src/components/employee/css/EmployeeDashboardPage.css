@@ -262,6 +262,21 @@ button:hover {
   color: white;
   font-weight: bold;
 }
+.send-btn-pill {
+  background-color: #4CAF50; /* Green color for a 'success' style */
+  color: white;
+  padding: 10px 20px; /* Padding for the pill shape */
+  border: none;
+  border-radius: 50px; /* Rounded edges for the pill effect */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.send-btn-pill:disabled {
+  background-color: #f44336; /* Light gray when disabled */
+  cursor: not-allowed;
+}
 
 /* Close Button */
 .close-btn {
@@ -302,3 +317,61 @@ button:hover {
 .close-btn:hover {
   background-color: #e53935;
 }
+.transaction-table-container {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.transaction-table th {
+  background-color: #4CAF50; /* Green header for nice contrast */
+  color: white;
+}
+
+.transaction-table tr:hover {
+  background-color: #f1f1f1; /* Light gray hover effect */
+}
+
+.transaction-table td button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.transaction-table td button:hover {
+  background-color: #0056b3;
+}
+
+.send-btn-pill {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
